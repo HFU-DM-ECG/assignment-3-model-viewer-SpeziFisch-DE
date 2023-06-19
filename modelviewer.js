@@ -5,12 +5,17 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 export const toonVertexShader = `
 varying vec3 vNormal;
 
+varying vec3 camDirection;
+
 void main() {
   vec4 modelPosition = modelMatrix * vec4(position, 1.0);
   vec4 viewPosition = viewMatrix * modelPosition;
   vec4 clipPosition = projectionMatrix * viewPosition;
 
   vNormal = normalize(normalMatrix * normal);
+
+  vec4 cD = inverse(projectionMatrix) * vec4(0, 0, 1.0, 1.0);
+  camDirection  = vec3(cD.x,cD.y,cD.z);
 
   gl_Position = clipPosition;
 }
@@ -22,10 +27,13 @@ export const toonFragmentShader = `
 uniform vec3 uColor;
 
 varying vec3 vNormal;
+varying vec3 camDirection;
 
 void main() {
     float LightxNormal = dot(vNormal, directionalLights[0].direction);
     float lightIntensity = 1.0;
+
+    float CamXNormal = dot(vNormal,camDirection);
     
     if (LightxNormal/2.0+0.5 < 0.97) {
         lightIntensity = 1.0;
@@ -40,10 +48,13 @@ void main() {
         }
     } else {
         lightIntensity = 3.0;
-    } 
+    }
     vec3 directionalLight = directionalLights[0].color * lightIntensity;
   
     gl_FragColor = vec4(uColor * (ambientLightColor + directionalLight), 1.0);
+    if (CamXNormal > -0.5 && CamXNormal < 0.5) {
+        gl_FragColor = vec4(uColor * -0.8, 1.0);
+    }
 
 }
 `;
