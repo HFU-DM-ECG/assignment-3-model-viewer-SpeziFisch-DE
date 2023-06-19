@@ -27,11 +27,11 @@ void main() {
     float LightxNormal = dot(vNormal, directionalLights[0].direction);
     float lightIntensity = 1.0;
     
-    if (LightxNormal/2.0+0.5 < 0.995) {
+    if (LightxNormal/2.0+0.5 < 0.97) {
         lightIntensity = 1.0;
         if (LightxNormal/2.0+0.5 < 0.6) {
             lightIntensity = 0.5;
-            if (LightxNormal/2.0+0.5 < 0.5) {
+            if (LightxNormal/2.0+0.5 < 0.4) {
                 lightIntensity = 0.2; 
                 if (LightxNormal/2.0+0.5 < 0.15) {
                     lightIntensity = -0.3;        
@@ -105,17 +105,17 @@ controls.target.set(0, 3, 0);
 controls.update();
 
 // object loading
-const teapot = new THREE.Object3D();
+const monkey = new THREE.Object3D();
 const loader = new GLTFLoader();
 
-loader.load('teapot.glb', function (gltf) {
-    teapot.add(gltf.scene.children[0]);
-    teapot.name = "teapot";
-    teapot.children[0].material = toonShaderMaterial;
-    scene.add(teapot);
-    teapot.scale.set(2, 2, 2);
-    teapot.rotateY(-1.49);
-    console.log(teapot);
+loader.load('monkey.glb', function (gltf) {
+    monkey.add(gltf.scene.children[0]);
+    monkey.name = "monkey";
+    monkey.children[0].material = toonShaderMaterial;
+    scene.add(monkey);
+    monkey.position.y = 3;
+    monkey.rotateY(2.7);
+    console.log(monkey);
 }, undefined, function (error) {
     console.error(error);
 });
